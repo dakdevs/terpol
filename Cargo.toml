@@ -1,0 +1,32 @@
+[package]
+name = "network-latch"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aes-gcm = "0.10"
+anyhow = "1"
+argon2 = "0.5"
+clap = { version = "4", features = ["derive"] }
+dirs = "6"
+globset = "0.4"
+http = "1"
+http-body-util = "0.1"
+hudsucker = { version = "0.24", features = ["rcgen-ca", "rustls-client"] }
+hyper = "1"
+notify = "7"
+rand = "0.8"
+rpassword = "7"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[dev-dependencies]
+reqwest = { version = "0.12", features = ["rustls-tls"] }
+tempfile = "3"
+tokio-test = "0.4"
+wiremock = "0.6"

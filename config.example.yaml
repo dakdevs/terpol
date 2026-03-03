@@ -1,0 +1,23 @@
+signature:
+  prefix: "%%VAULT["
+  suffix: "]%%"
+
+mitm:
+  domains:
+    # Add domains to intercept HTTPS for:
+    # - api.stripe.com
+    # - "*.internal.corp"
+
+proxy:
+  listen: "127.0.0.1:8080"
+
+rules: []
+  # Example rule:
+  # - name: my-api-key
+  #   secret: MY_API_KEY
+  #   domain: api.example.com
+  #   method: "*"
+  #   path: "*"
+  #   target: header
+  #   header_name: Authorization
+  #   on_missing: block
