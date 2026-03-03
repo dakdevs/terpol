@@ -2,8 +2,12 @@ pub mod types;
 
 pub use types::*;
 
-use std::path::Path;
+use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
+use std::path::{Path, PathBuf};
+use std::sync::Arc;
 use thiserror::Error;
+use tokio::sync::RwLock;
+use tracing::{error, info};
 
 #[derive(Debug, Error)]
 pub enum ConfigError {
@@ -45,6 +49,43 @@ fn validate(config: &Config) -> Result<(), ConfigError> {
     }
 
     Ok(())
+}
+
+pub fn watch_config(
+    path: PathBuf,
+    config: Arc<RwLock<Config>>,
+) -> Result<RecommendedWatcher, notify::Error> {
+    let config_clone = config.clone();
+    let path_clone = path.clone();
+
+    let mut watcher = notify::recommended_watcher(move |res: Result<Event, notify::Error>| {
+        match res {
+            Ok(event) => {
+                if matches!(
+                    event.kind,
+                    EventKind::Modify(_) | EventKind::Create(_)
+                ) {
+                    match load_config(&path_clone) {
+                        Ok(new_config) => {
+                            let config = config_clone.clone();
+                            // Use blocking write since we're in a sync callback
+                            if let Ok(mut guard) = config.try_write() {
+                                *guard = new_config;
+                                info!("config reloaded from {}", path_clone.display());
+                            }
+                        }
+                        Err(e) => {
+                            error!("failed to reload config: {e}");
+                        }
+                    }
+                }
+            }
+            Err(e) => error!("config watcher error: {e}"),
+        }
+    })?;
+
+    watcher.watch(path.as_ref(), RecursiveMode::NonRecursive)?;
+    Ok(watcher)
 }
 
 #[cfg(test)]
