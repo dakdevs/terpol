@@ -45,7 +45,7 @@ async fn main() -> anyhow::Result<()> {
             println!("Initialization complete.");
         }
 
-        Command::Run { daemon: _ } => {
+        Command::Run { daemon: _, no_system_proxy } => {
             let config_path = config_dir.join("config.yaml");
             let cfg = config::load_config(&config_path)?;
 
@@ -53,6 +53,28 @@ async fn main() -> anyhow::Result<()> {
             let password = rpassword::prompt_password("Vault password: ")?;
             let vault_backend =
                 vault::encrypted_file::EncryptedFileVault::open(&vault_path, &password)?;
+
+            // Parse listen address for system proxy setup
+            let listen_addr: std::net::SocketAddr = cfg.proxy.listen.parse()?;
+
+            // Set system proxy (restored automatically on drop)
+            let _proxy_guard = if no_system_proxy {
+                None
+            } else {
+                match proxy::system_proxy::ProxyGuard::enable(
+                    &listen_addr.ip().to_string(),
+                    listen_addr.port(),
+                ) {
+                    Ok(guard) => {
+                        println!("System proxy enabled — all apps will route through network-latch");
+                        Some(guard)
+                    }
+                    Err(e) => {
+                        eprintln!("Warning: could not set system proxy ({e}), use HTTP_PROXY manually");
+                        None
+                    }
+                }
+            };
 
             let (shutdown_tx, shutdown_rx) = tokio::sync::oneshot::channel();
 
@@ -64,6 +86,8 @@ async fn main() -> anyhow::Result<()> {
 
             proxy::server::run_proxy(&cfg, Box::new(vault_backend), config_dir, shutdown_rx)
                 .await?;
+
+            // _proxy_guard drops here, restoring system proxy settings
         }
 
         Command::Secret { action } => {

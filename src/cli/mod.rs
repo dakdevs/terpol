@@ -37,6 +37,9 @@ pub enum Command {
         /// Run as background daemon
         #[arg(long)]
         daemon: bool,
+        /// Don't set system proxy (require manual HTTP_PROXY instead)
+        #[arg(long)]
+        no_system_proxy: bool,
     },
     /// Manage secrets in the vault
     Secret {
