@@ -1,8 +1,8 @@
+use tempfile::TempDir;
 use terpol::config;
 use terpol::engine::rules::RuleEngine;
 use terpol::engine::scanner::replace_signatures;
-use terpol::vault::{encrypted_file::EncryptedFileVault, VaultBackend};
-use tempfile::TempDir;
+use terpol::vault::{VaultBackend, encrypted_file::EncryptedFileVault};
 
 /// Integration test: validates that the full pipeline works end-to-end.
 /// Config parsing -> vault creation -> rule matching -> signature replacement.

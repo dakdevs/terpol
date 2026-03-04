@@ -60,7 +60,10 @@ impl ProxyGuard {
         let port_str = port.to_string();
 
         run_cmd("networksetup", &["-setwebproxy", &service, host, &port_str])?;
-        run_cmd("networksetup", &["-setsecurewebproxy", &service, host, &port_str])?;
+        run_cmd(
+            "networksetup",
+            &["-setsecurewebproxy", &service, host, &port_str],
+        )?;
 
         info!(
             service = %service,
@@ -80,21 +83,29 @@ impl ProxyGuard {
         let svc = &self.network_service;
 
         if self.prev_web_proxy.enabled {
-            run_cmd("networksetup", &[
-                "-setwebproxy", svc,
-                &self.prev_web_proxy.host,
-                &self.prev_web_proxy.port,
-            ])?;
+            run_cmd(
+                "networksetup",
+                &[
+                    "-setwebproxy",
+                    svc,
+                    &self.prev_web_proxy.host,
+                    &self.prev_web_proxy.port,
+                ],
+            )?;
         } else {
             run_cmd("networksetup", &["-setwebproxystate", svc, "off"])?;
         }
 
         if self.prev_secure_proxy.enabled {
-            run_cmd("networksetup", &[
-                "-setsecurewebproxy", svc,
-                &self.prev_secure_proxy.host,
-                &self.prev_secure_proxy.port,
-            ])?;
+            run_cmd(
+                "networksetup",
+                &[
+                    "-setsecurewebproxy",
+                    svc,
+                    &self.prev_secure_proxy.host,
+                    &self.prev_secure_proxy.port,
+                ],
+            )?;
         } else {
             run_cmd("networksetup", &["-setsecurewebproxystate", svc, "off"])?;
         }
@@ -111,11 +122,26 @@ impl ProxyGuard {
 
         let port_str = port.to_string();
 
-        run_cmd("gsettings", &["set", "org.gnome.system.proxy", "mode", "manual"])?;
-        run_cmd("gsettings", &["set", "org.gnome.system.proxy.http", "host", host])?;
-        run_cmd("gsettings", &["set", "org.gnome.system.proxy.http", "port", &port_str])?;
-        run_cmd("gsettings", &["set", "org.gnome.system.proxy.https", "host", host])?;
-        run_cmd("gsettings", &["set", "org.gnome.system.proxy.https", "port", &port_str])?;
+        run_cmd(
+            "gsettings",
+            &["set", "org.gnome.system.proxy", "mode", "manual"],
+        )?;
+        run_cmd(
+            "gsettings",
+            &["set", "org.gnome.system.proxy.http", "host", host],
+        )?;
+        run_cmd(
+            "gsettings",
+            &["set", "org.gnome.system.proxy.http", "port", &port_str],
+        )?;
+        run_cmd(
+            "gsettings",
+            &["set", "org.gnome.system.proxy.https", "host", host],
+        )?;
+        run_cmd(
+            "gsettings",
+            &["set", "org.gnome.system.proxy.https", "port", &port_str],
+        )?;
 
         info!(host = %host, port = %port, "system proxy enabled (GNOME)");
 
@@ -128,12 +154,47 @@ impl ProxyGuard {
 
     fn disable_linux(&self) -> Result<(), SystemProxyError> {
         if self.prev_web_proxy.enabled {
-            run_cmd("gsettings", &["set", "org.gnome.system.proxy.http", "host", &self.prev_web_proxy.host])?;
-            run_cmd("gsettings", &["set", "org.gnome.system.proxy.http", "port", &self.prev_web_proxy.port])?;
-            run_cmd("gsettings", &["set", "org.gnome.system.proxy.https", "host", &self.prev_secure_proxy.host])?;
-            run_cmd("gsettings", &["set", "org.gnome.system.proxy.https", "port", &self.prev_secure_proxy.port])?;
+            run_cmd(
+                "gsettings",
+                &[
+                    "set",
+                    "org.gnome.system.proxy.http",
+                    "host",
+                    &self.prev_web_proxy.host,
+                ],
+            )?;
+            run_cmd(
+                "gsettings",
+                &[
+                    "set",
+                    "org.gnome.system.proxy.http",
+                    "port",
+                    &self.prev_web_proxy.port,
+                ],
+            )?;
+            run_cmd(
+                "gsettings",
+                &[
+                    "set",
+                    "org.gnome.system.proxy.https",
+                    "host",
+                    &self.prev_secure_proxy.host,
+                ],
+            )?;
+            run_cmd(
+                "gsettings",
+                &[
+                    "set",
+                    "org.gnome.system.proxy.https",
+                    "port",
+                    &self.prev_secure_proxy.port,
+                ],
+            )?;
         } else {
-            run_cmd("gsettings", &["set", "org.gnome.system.proxy", "mode", "none"])?;
+            run_cmd(
+                "gsettings",
+                &["set", "org.gnome.system.proxy", "mode", "none"],
+            )?;
         }
 
         info!("system proxy restored (GNOME)");
@@ -161,7 +222,12 @@ fn detect_macos_service() -> Result<String, SystemProxyError> {
     let stdout = String::from_utf8_lossy(&output.stdout);
 
     // Try common service names in priority order
-    for candidate in ["Wi-Fi", "Ethernet", "USB 10/100/1000 LAN", "Thunderbolt Ethernet"] {
+    for candidate in [
+        "Wi-Fi",
+        "Ethernet",
+        "USB 10/100/1000 LAN",
+        "Thunderbolt Ethernet",
+    ] {
         if stdout.lines().any(|line| line.trim() == candidate) {
             return Ok(candidate.to_string());
         }
@@ -215,7 +281,9 @@ fn get_linux_proxy_state(scheme: &str) -> Result<ProxyState, SystemProxyError> {
         .output()
         .map_err(|e| SystemProxyError::Detection(e.to_string()))?;
 
-    let mode_str = String::from_utf8_lossy(&mode.stdout).trim().replace('\'', "");
+    let mode_str = String::from_utf8_lossy(&mode.stdout)
+        .trim()
+        .replace('\'', "");
     let enabled = mode_str == "manual";
 
     let host_output = Command::new("gsettings")
@@ -230,8 +298,12 @@ fn get_linux_proxy_state(scheme: &str) -> Result<ProxyState, SystemProxyError> {
 
     Ok(ProxyState {
         enabled,
-        host: String::from_utf8_lossy(&host_output.stdout).trim().replace('\'', ""),
-        port: String::from_utf8_lossy(&port_output.stdout).trim().to_string(),
+        host: String::from_utf8_lossy(&host_output.stdout)
+            .trim()
+            .replace('\'', ""),
+        port: String::from_utf8_lossy(&port_output.stdout)
+            .trim()
+            .to_string(),
     })
 }
 

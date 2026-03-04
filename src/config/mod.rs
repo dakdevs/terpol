@@ -26,6 +26,7 @@ pub fn load_config(path: &Path) -> Result<Config, ConfigError> {
     Ok(config)
 }
 
+#[allow(dead_code)]
 pub fn parse_config(yaml: &str) -> Result<Config, ConfigError> {
     let config: Config = serde_yaml::from_str(yaml)?;
     validate(&config)?;
@@ -51,6 +52,7 @@ fn validate(config: &Config) -> Result<(), ConfigError> {
     Ok(())
 }
 
+#[allow(dead_code)]
 pub fn watch_config(
     path: PathBuf,
     config: Arc<RwLock<Config>>,
@@ -61,10 +63,7 @@ pub fn watch_config(
     let mut watcher = notify::recommended_watcher(move |res: Result<Event, notify::Error>| {
         match res {
             Ok(event) => {
-                if matches!(
-                    event.kind,
-                    EventKind::Modify(_) | EventKind::Create(_)
-                ) {
+                if matches!(event.kind, EventKind::Modify(_) | EventKind::Create(_)) {
                     match load_config(&path_clone) {
                         Ok(new_config) => {
                             let config = config_clone.clone();
@@ -104,7 +103,10 @@ proxy:
   listen: "127.0.0.1:8080"
 "#;
         let err = parse_config(yaml).unwrap_err();
-        assert!(err.to_string().contains("prefix and suffix must not be empty"));
+        assert!(
+            err.to_string()
+                .contains("prefix and suffix must not be empty")
+        );
     }
 
     #[test]

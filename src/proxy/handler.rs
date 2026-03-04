@@ -7,8 +7,8 @@ use crate::vault::VaultBackend;
 use http::{Response, StatusCode};
 use http_body_util::Full;
 use hudsucker::{Body, HttpContext, HttpHandler, RequestOrResponse};
-use hyper::body::Bytes;
 use hyper::Request;
+use hyper::body::Bytes;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tracing::{debug, error, info};
@@ -63,11 +63,7 @@ impl LatchHandler {
 }
 
 impl HttpHandler for LatchHandler {
-    async fn should_intercept(
-        &mut self,
-        _ctx: &HttpContext,
-        req: &Request<Body>,
-    ) -> bool {
+    async fn should_intercept(&mut self, _ctx: &HttpContext, req: &Request<Body>) -> bool {
         let host = Self::extract_host(req).unwrap_or_default();
         let should = self.domain_in_mitm_list(&host);
         debug!(host = %host, intercept = should, "CONNECT tunnel decision");
@@ -111,9 +107,8 @@ impl HttpHandler for LatchHandler {
             match rule.target {
                 RuleTarget::Url => {
                     let uri_str = req.uri().to_string();
-                    let (replaced, missing) = replace_signatures(&uri_str, &self.sig, &|key| {
-                        vault.get(key).ok()
-                    });
+                    let (replaced, missing) =
+                        replace_signatures(&uri_str, &self.sig, &|key| vault.get(key).ok());
 
                     if !missing.is_empty() {
                         if rule.on_missing == OnMissing::Block {
@@ -131,11 +126,11 @@ impl HttpHandler for LatchHandler {
                                 .unwrap()
                                 .into();
                         }
-                    } else if replaced != uri_str {
-                        if let Ok(new_uri) = replaced.parse() {
-                            *req.uri_mut() = new_uri;
-                            info!(rule = %rule.name, "substituted signature in URL");
-                        }
+                    } else if replaced != uri_str
+                        && let Ok(new_uri) = replaced.parse()
+                    {
+                        *req.uri_mut() = new_uri;
+                        info!(rule = %rule.name, "substituted signature in URL");
                     }
                 }
 
@@ -168,19 +163,19 @@ impl HttpHandler for LatchHandler {
                                 .into();
                         }
 
-                        if replaced != value_str {
-                            if let Ok(new_value) = replaced.parse() {
-                                req.headers_mut().insert(
-                                    http::header::HeaderName::from_bytes(header_name.as_bytes())
-                                        .unwrap(),
-                                    new_value,
-                                );
-                                info!(
-                                    rule = %rule.name,
-                                    header = %header_name,
-                                    "substituted signature in header"
-                                );
-                            }
+                        if replaced != value_str
+                            && let Ok(new_value) = replaced.parse()
+                        {
+                            req.headers_mut().insert(
+                                http::header::HeaderName::from_bytes(header_name.as_bytes())
+                                    .unwrap(),
+                                new_value,
+                            );
+                            info!(
+                                rule = %rule.name,
+                                header = %header_name,
+                                "substituted signature in header"
+                            );
                         }
                     }
                 }
@@ -207,11 +202,7 @@ impl HttpHandler for LatchHandler {
                         }
 
                         if replaced != query {
-                            let new_uri = format!(
-                                "{}?{}",
-                                req.uri().path(),
-                                replaced
-                            );
+                            let new_uri = format!("{}?{}", req.uri().path(), replaced);
                             if let Ok(new_uri) = new_uri.parse() {
                                 *req.uri_mut() = new_uri;
                                 info!(rule = %rule.name, "substituted signature in query");
@@ -240,7 +231,10 @@ impl HttpHandler for LatchHandler {
                         Ok(s) => s,
                         Err(_) => {
                             // Binary body -- can't scan, reassemble and continue
-                            req = Request::from_parts(parts, Body::from(Full::new(Bytes::copy_from_slice(&body_bytes))));
+                            req = Request::from_parts(
+                                parts,
+                                Body::from(Full::new(Bytes::copy_from_slice(&body_bytes))),
+                            );
                             continue;
                         }
                     };

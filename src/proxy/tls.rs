@@ -43,8 +43,7 @@ pub fn load_ca(dir: &Path) -> Result<RcgenAuthority, TlsError> {
     let cert_pem = std::fs::read_to_string(dir.join("ca.pem"))?;
     let key_pem = std::fs::read_to_string(dir.join("ca-key.pem"))?;
 
-    let key_pair =
-        KeyPair::from_pem(&key_pem).map_err(|e| TlsError::Parse(e.to_string()))?;
+    let key_pair = KeyPair::from_pem(&key_pem).map_err(|e| TlsError::Parse(e.to_string()))?;
     let issuer = Issuer::from_ca_cert_pem(&cert_pem, key_pair)
         .map_err(|e| TlsError::Parse(e.to_string()))?;
 

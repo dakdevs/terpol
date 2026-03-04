@@ -4,8 +4,8 @@ use crate::proxy::handler::LatchHandler;
 use crate::proxy::tls::load_ca;
 use crate::vault::VaultBackend;
 
-use hudsucker::rustls::crypto::aws_lc_rs;
 use hudsucker::Proxy;
+use hudsucker::rustls::crypto::aws_lc_rs;
 use std::net::SocketAddr;
 use std::path::Path;
 use thiserror::Error;
@@ -32,8 +32,12 @@ pub async fn run_proxy(
 ) -> Result<(), ServerError> {
     let ca = load_ca(config_dir)?;
     let engine = RuleEngine::new(config.rules.clone())?;
-    let handler =
-        LatchHandler::new(engine, vault, config.signature.clone(), &config.mitm.domains)?;
+    let handler = LatchHandler::new(
+        engine,
+        vault,
+        config.signature.clone(),
+        &config.mitm.domains,
+    )?;
 
     let addr: SocketAddr = config.proxy.listen.parse()?;
 

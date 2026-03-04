@@ -78,9 +78,13 @@ mod tests {
 
     #[test]
     fn test_exact_domain_match() {
-        let engine =
-            RuleEngine::new(vec![make_rule("api.stripe.com", "*", "*", RuleTarget::Header)])
-                .unwrap();
+        let engine = RuleEngine::new(vec![make_rule(
+            "api.stripe.com",
+            "*",
+            "*",
+            RuleTarget::Header,
+        )])
+        .unwrap();
 
         let matches = engine.match_rules("api.stripe.com", "GET", "/v1/charges");
         assert_eq!(matches.len(), 1);
@@ -91,9 +95,13 @@ mod tests {
 
     #[test]
     fn test_wildcard_domain() {
-        let engine =
-            RuleEngine::new(vec![make_rule("*.internal.corp", "*", "*", RuleTarget::Body)])
-                .unwrap();
+        let engine = RuleEngine::new(vec![make_rule(
+            "*.internal.corp",
+            "*",
+            "*",
+            RuleTarget::Body,
+        )])
+        .unwrap();
 
         let matches = engine.match_rules("api.internal.corp", "POST", "/");
         assert_eq!(matches.len(), 1);
@@ -104,9 +112,13 @@ mod tests {
 
     #[test]
     fn test_method_filter() {
-        let engine =
-            RuleEngine::new(vec![make_rule("api.example.com", "POST", "*", RuleTarget::Body)])
-                .unwrap();
+        let engine = RuleEngine::new(vec![make_rule(
+            "api.example.com",
+            "POST",
+            "*",
+            RuleTarget::Body,
+        )])
+        .unwrap();
 
         let matches = engine.match_rules("api.example.com", "POST", "/");
         assert_eq!(matches.len(), 1);
@@ -117,9 +129,13 @@ mod tests {
 
     #[test]
     fn test_path_glob() {
-        let engine =
-            RuleEngine::new(vec![make_rule("api.stripe.com", "*", "/v1/*", RuleTarget::Header)])
-                .unwrap();
+        let engine = RuleEngine::new(vec![make_rule(
+            "api.stripe.com",
+            "*",
+            "/v1/*",
+            RuleTarget::Header,
+        )])
+        .unwrap();
 
         let matches = engine.match_rules("api.stripe.com", "GET", "/v1/charges");
         assert_eq!(matches.len(), 1);

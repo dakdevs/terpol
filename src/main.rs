@@ -23,7 +23,10 @@ async fn main() -> anyhow::Result<()> {
 
             // Generate CA
             proxy::tls::generate_ca(config_dir)?;
-            println!("CA certificate generated at {}/ca.pem", config_dir.display());
+            println!(
+                "CA certificate generated at {}/ca.pem",
+                config_dir.display()
+            );
 
             // Create example config if none exists
             let config_path = config_dir.join("config.yaml");
@@ -45,7 +48,10 @@ async fn main() -> anyhow::Result<()> {
             println!("Initialization complete.");
         }
 
-        Command::Run { daemon: _, no_system_proxy } => {
+        Command::Run {
+            daemon: _,
+            no_system_proxy,
+        } => {
             let config_path = config_dir.join("config.yaml");
             let cfg = config::load_config(&config_path)?;
 
@@ -70,7 +76,9 @@ async fn main() -> anyhow::Result<()> {
                         Some(guard)
                     }
                     Err(e) => {
-                        eprintln!("Warning: could not set system proxy ({e}), use HTTP_PROXY manually");
+                        eprintln!(
+                            "Warning: could not set system proxy ({e}), use HTTP_PROXY manually"
+                        );
                         None
                     }
                 }
@@ -99,7 +107,7 @@ async fn main() -> anyhow::Result<()> {
             use crate::vault::VaultBackend;
             match action {
                 cli::secret::SecretAction::Add { key } => {
-                    let value = rpassword::prompt_password(&format!("Value for {key}: "))?;
+                    let value = rpassword::prompt_password(format!("Value for {key}: "))?;
                     vault_backend.set(&key, &value)?;
                     println!("Secret '{key}' added.");
                 }

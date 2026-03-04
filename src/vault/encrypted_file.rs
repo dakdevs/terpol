@@ -1,7 +1,7 @@
 use super::{VaultBackend, VaultError};
 use aes_gcm::{
-    aead::{Aead, KeyInit},
     Aes256Gcm, Nonce,
+    aead::{Aead, KeyInit},
 };
 use argon2::Argon2;
 use rand::RngCore;
@@ -70,8 +70,8 @@ impl EncryptedFileVault {
     }
 
     fn persist(&self, salt: &[u8]) -> Result<(), VaultError> {
-        let plaintext = serde_json::to_vec(&self.secrets)
-            .map_err(|e| VaultError::Encryption(e.to_string()))?;
+        let plaintext =
+            serde_json::to_vec(&self.secrets).map_err(|e| VaultError::Encryption(e.to_string()))?;
 
         let cipher = Aes256Gcm::new_from_slice(&self.derived_key)
             .map_err(|e| VaultError::Encryption(e.to_string()))?;
