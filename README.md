@@ -4,19 +4,15 @@ A MITM proxy that injects secrets from an encrypted vault into network requests.
 
 ## How It Works
 
-```
-+----------------+     +---------------------------------------+     +----------+
-|  Any App       |---->|              terpol                    |---->| Internet |
-|  (via proxy)   |<----|                                       |<----|          |
-+----------------+     |  +-----------+  +---------------+     |     +----------+
-                       |  | Rule      |  | Vault         |     |
-                       |  | Engine    |  | (AES-256-GCM) |     |
-                       |  +-----------+  +---------------+     |
-                       |  +-----------+  +---------------+     |
-                       |  | Signature |  | Leak          |     |
-                       |  | Scanner   |  | Detector      |     |
-                       |  +-----------+  +---------------+     |
-                       +---------------------------------------+
+```mermaid
+graph LR
+    App["Any App<br/>(via proxy)"] <--> Terpol
+    Terpol <--> Internet
+
+    subgraph Terpol["terpol"]
+        RE["Rule Engine"] ~~~ V["Vault<br/>(AES-256-GCM)"]
+        SS["Signature Scanner"] ~~~ LD["Leak Detector"]
+    end
 ```
 
 1. Request arrives at the proxy
