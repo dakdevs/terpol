@@ -11,16 +11,16 @@ fn default_config_dir() -> PathBuf {
 
 fn dirs_or_default() -> PathBuf {
     if let Some(config) = dirs::config_dir() {
-        config.join("sever")
+        config.join("terpol")
     } else {
-        PathBuf::from(".sever")
+        PathBuf::from(".terpol")
     }
 }
 
 #[derive(Parser)]
-#[command(name = "sever", about = "Secret-injecting MITM proxy")]
+#[command(name = "terpol", about = "Secret-injecting MITM proxy")]
 pub struct Cli {
-    /// Config directory (default: ~/.config/sever)
+    /// Config directory (default: ~/.config/terpol)
     #[arg(long, global = true, default_value_os_t = default_config_dir())]
     pub config_dir: PathBuf,
 

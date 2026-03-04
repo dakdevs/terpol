@@ -2343,36 +2343,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sever"
-version = "0.1.0"
-dependencies = [
- "aes-gcm",
- "anyhow",
- "argon2",
- "clap",
- "dirs",
- "globset",
- "http",
- "http-body-util",
- "hudsucker",
- "hyper",
- "notify",
- "rand 0.8.5",
- "reqwest",
- "rpassword",
- "serde",
- "serde_json",
- "serde_yaml",
- "tempfile",
- "thiserror",
- "tokio",
- "tokio-test",
- "tracing",
- "tracing-subscriber",
- "wiremock",
-]
-
-[[package]]
 name = "sha1"
 version = "0.10.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2523,6 +2493,36 @@ dependencies = [
  "once_cell",
  "rustix",
  "windows-sys 0.61.2",
+]
+
+[[package]]
+name = "terpol"
+version = "0.1.0"
+dependencies = [
+ "aes-gcm",
+ "anyhow",
+ "argon2",
+ "clap",
+ "dirs",
+ "globset",
+ "http",
+ "http-body-util",
+ "hudsucker",
+ "hyper",
+ "notify",
+ "rand 0.8.5",
+ "reqwest",
+ "rpassword",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "tempfile",
+ "thiserror",
+ "tokio",
+ "tokio-test",
+ "tracing",
+ "tracing-subscriber",
+ "wiremock",
 ]
 
 [[package]]

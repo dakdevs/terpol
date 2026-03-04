@@ -1,7 +1,7 @@
-use sever::config;
-use sever::engine::rules::RuleEngine;
-use sever::engine::scanner::replace_signatures;
-use sever::vault::{encrypted_file::EncryptedFileVault, VaultBackend};
+use terpol::config;
+use terpol::engine::rules::RuleEngine;
+use terpol::engine::scanner::replace_signatures;
+use terpol::vault::{encrypted_file::EncryptedFileVault, VaultBackend};
 use tempfile::TempDir;
 
 /// Integration test: validates that the full pipeline works end-to-end.
@@ -14,8 +14,8 @@ fn test_pipeline_end_to_end() {
     let tmp = TempDir::new().unwrap();
 
     // 1. Generate and load CA
-    sever::proxy::tls::generate_ca(tmp.path()).unwrap();
-    let _ca = sever::proxy::tls::load_ca(tmp.path()).unwrap();
+    terpol::proxy::tls::generate_ca(tmp.path()).unwrap();
+    let _ca = terpol::proxy::tls::load_ca(tmp.path()).unwrap();
 
     // 2. Create vault with a test secret
     let vault_path = tmp.path().join("vault.enc");

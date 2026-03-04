@@ -22,8 +22,8 @@ pub fn generate_ca(dir: &Path) -> Result<(), TlsError> {
     let mut params = CertificateParams::default();
     params.distinguished_name = {
         let mut dn = DistinguishedName::new();
-        dn.push(DnType::CommonName, "sever CA");
-        dn.push(DnType::OrganizationName, "sever");
+        dn.push(DnType::CommonName, "terpol CA");
+        dn.push(DnType::OrganizationName, "terpol");
         dn
     };
     params.is_ca = hudsucker::rcgen::IsCa::Ca(hudsucker::rcgen::BasicConstraints::Unconstrained);
