@@ -37,7 +37,7 @@ pub async fn run_proxy(
 
     let addr: SocketAddr = config.proxy.listen.parse()?;
 
-    info!(addr = %addr, "starting network-latch proxy");
+    info!(addr = %addr, "starting sever proxy");
 
     let proxy = Proxy::builder()
         .with_addr(addr)

@@ -66,7 +66,7 @@ async fn main() -> anyhow::Result<()> {
                     listen_addr.port(),
                 ) {
                     Ok(guard) => {
-                        println!("System proxy enabled — all apps will route through network-latch");
+                        println!("System proxy enabled — all apps will route through sever");
                         Some(guard)
                     }
                     Err(e) => {

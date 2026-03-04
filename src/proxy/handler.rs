@@ -125,7 +125,7 @@ impl HttpHandler for LatchHandler {
                             return Response::builder()
                                 .status(StatusCode::BAD_GATEWAY)
                                 .body(Body::from(format!(
-                                    "network-latch: missing vault keys: {:?}",
+                                    "sever: missing vault keys: {:?}",
                                     missing
                                 )))
                                 .unwrap()
@@ -161,7 +161,7 @@ impl HttpHandler for LatchHandler {
                             return Response::builder()
                                 .status(StatusCode::BAD_GATEWAY)
                                 .body(Body::from(format!(
-                                    "network-latch: missing vault keys: {:?}",
+                                    "sever: missing vault keys: {:?}",
                                     missing
                                 )))
                                 .unwrap()
@@ -199,7 +199,7 @@ impl HttpHandler for LatchHandler {
                             return Response::builder()
                                 .status(StatusCode::BAD_GATEWAY)
                                 .body(Body::from(format!(
-                                    "network-latch: missing vault keys: {:?}",
+                                    "sever: missing vault keys: {:?}",
                                     missing
                                 )))
                                 .unwrap()
@@ -230,7 +230,7 @@ impl HttpHandler for LatchHandler {
                             error!(rule = %rule.name, "failed to read request body");
                             return Response::builder()
                                 .status(StatusCode::BAD_GATEWAY)
-                                .body(Body::from("network-latch: failed to read request body"))
+                                .body(Body::from("sever: failed to read request body"))
                                 .unwrap()
                                 .into();
                         }
@@ -257,7 +257,7 @@ impl HttpHandler for LatchHandler {
                         return Response::builder()
                             .status(StatusCode::BAD_GATEWAY)
                             .body(Body::from(format!(
-                                "network-latch: missing vault keys: {:?}",
+                                "sever: missing vault keys: {:?}",
                                 missing
                             )))
                             .unwrap()

@@ -11,16 +11,16 @@ fn default_config_dir() -> PathBuf {
 
 fn dirs_or_default() -> PathBuf {
     if let Some(config) = dirs::config_dir() {
-        config.join("network-latch")
+        config.join("sever")
     } else {
-        PathBuf::from(".network-latch")
+        PathBuf::from(".sever")
     }
 }
 
 #[derive(Parser)]
-#[command(name = "network-latch", about = "Secret-injecting MITM proxy")]
+#[command(name = "sever", about = "Secret-injecting MITM proxy")]
 pub struct Cli {
-    /// Config directory (default: ~/.config/network-latch)
+    /// Config directory (default: ~/.config/sever)
     #[arg(long, global = true, default_value_os_t = default_config_dir())]
     pub config_dir: PathBuf,
 

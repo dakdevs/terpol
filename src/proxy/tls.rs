@@ -22,8 +22,8 @@ pub fn generate_ca(dir: &Path) -> Result<(), TlsError> {
     let mut params = CertificateParams::default();
     params.distinguished_name = {
         let mut dn = DistinguishedName::new();
-        dn.push(DnType::CommonName, "network-latch CA");
-        dn.push(DnType::OrganizationName, "network-latch");
+        dn.push(DnType::CommonName, "sever CA");
+        dn.push(DnType::OrganizationName, "sever");
         dn
     };
     params.is_ca = hudsucker::rcgen::IsCa::Ca(hudsucker::rcgen::BasicConstraints::Unconstrained);
