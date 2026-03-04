@@ -28,7 +28,10 @@ A MITM proxy that injects secrets from an encrypted vault into network requests.
 ## Quick Start
 
 ```bash
-# Install (from releases or build from source)
+# Install via Homebrew (macOS / Linux)
+brew install dakdevs/terpol/terpol
+
+# Or install from source
 cargo install --path .
 
 # Initialize config, vault, and CA certificate

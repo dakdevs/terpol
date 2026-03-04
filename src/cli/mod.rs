@@ -18,7 +18,7 @@ fn dirs_or_default() -> PathBuf {
 }
 
 #[derive(Parser)]
-#[command(name = "terpol", about = "Secret-injecting MITM proxy")]
+#[command(name = "terpol", about = "Secret-injecting MITM proxy", version)]
 pub struct Cli {
     /// Config directory (default: ~/.config/terpol)
     #[arg(long, global = true, default_value_os_t = default_config_dir())]
