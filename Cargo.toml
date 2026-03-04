@@ -1,6 +1,6 @@
 [package]
 name = "terpol"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 
 [dependencies]
@@ -14,6 +14,7 @@ http = "1"
 http-body-util = "0.1"
 hudsucker = { version = "0.24", features = ["rcgen-ca", "rustls-client"] }
 hyper = "1"
+libc = "0.2"
 notify = "7"
 rand = "0.8"
 rpassword = "7"
